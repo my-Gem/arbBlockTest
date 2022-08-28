@@ -1,4 +1,4 @@
-<template>
+\<template>
   <div id="app">
     <HelloWorld msg="Query blockchain transaction data" />
     <div :style="{ display: 'flex', justifyContent: 'center' }">
@@ -7,10 +7,12 @@
     </pre>
     </div>
     <div>
-      <input type="text" v-model="addr"  placeholder="please enter wallet address" />
+      <input type="text" v-model="addr" placeholder="please enter wallet address" /><button @click="searchAll">
+        search
+      </button>
     </div>
     <div :style="{ display: 'flex', justifyContent: 'center' }">
-    <table>
+      <table>
         <tr>
           <td>交易哈希</td>
           <td>区块高度</td>
@@ -22,10 +24,18 @@
         <tr v-for="(item, index) in currentPageData" :key="index">
           <td>{{ item.hash }}</td>
           <td>{{ item.blockNumber }}</td>
-          <td>{{ new Date(item.timeStamp * 1000).toLocaleDateString().replace(/\//g,"-")+" "+new Date(item.timeStamp * 1000).toTimeString().substr(0,8) }}</td>
+          <td>
+            {{
+              new Date(item.timeStamp * 1000).toLocaleDateString().replace(/\//g, '-') +
+              ' ' +
+              new Date(item.timeStamp * 1000).toTimeString().substr(0, 8)
+            }}
+          </td>
           <td>{{ item.from }}</td>
           <td>{{ item.hash }}</td>
-          <td>{{ (new bigNumber(item.gasPrice).multipliedBy(new bigNumber(item.gasUsed))).dividedBy(10**18) }} Ether</td>
+          <td>
+            {{ new bigNumber(item.gasPrice).multipliedBy(new bigNumber(item.gasUsed)).dividedBy(10 ** 18) }} Ether
+          </td>
         </tr>
       </table>
     </div>
@@ -55,7 +65,7 @@ export default {
       currentPageData: [], //当前页显示内容
       headPage: 1,
       addr: null,
-      bigNumber: BigNumber
+      bigNumber: BigNumber,
     };
   },
   methods: {
@@ -68,9 +78,9 @@ export default {
     prevPage() {
       if (this.currentPage === 0) {
         return false;
-      } else if(this.currentPage == 1){
+      } else if (this.currentPage == 1) {
         this.search(this.currentPage);
-      }else {
+      } else {
         this.currentPage--;
         this.search(this.currentPage);
       }
@@ -80,11 +90,11 @@ export default {
       this.currentPage++;
       this.search(this.currentPage);
     },
-    search(pageBegin=1) {
-      console.log('addr:  ', this.addr);
+    search(pageBegin = 1) {
       this.addr = this.addr.trim();
       var _this = this;
       if (this.addr.startsWith('0x')) {
+        //此步骤放到后端做比较好,当然此步骤也可以省略
         const alchemyUrl = 'https://eth-mainnet.alchemyapi.io/v2/b72m4oD0j-ENnP87KiOyCsJPzWrbaBc-';
         const data = {
           id: 1,
@@ -109,12 +119,12 @@ export default {
                 .get(`http://192.168.124.5:39037/api/txs/${this.addr}/${pageBegin}`)
                 .then((showData) => {
                   console.log(showData);
-                  if(data == []){
-		    return;
-		  }else{
-		     this.currentPageData = showData.data.result;	
-                     console.log("this.currentPageData:  ",this.currentPageData);
-		  }
+                  if (data == []) {
+                    return;
+                  } else {
+                    this.currentPageData = showData.data.result;
+                    console.log('this.currentPageData:  ', this.currentPageData);
+                  }
                 })
                 .catch((err) => {
                   console.log(err);
@@ -137,6 +147,25 @@ export default {
         return;
       }
     },
+    searchAll() {
+      this.addr = this.addr.trim();
+      if (this.addr.startsWith('0x') && this.addr.length == 42) {
+        axios
+          .get(`http://192.168.124.5:39037/api/txs/${this.addr}/10000/`)
+          .then((data) => {
+            if (data == []) {
+                    return;
+                  } else {
+                    this.currentPageData = showData.data.result;
+                    console.log('this.currentPageData:  ', this.currentPageData);
+                  }
+          })
+          .catch((err) => {
+            console.log(err);
+            alert(err);
+          });
+      }
+    },
   },
 };
 </script>
@@ -150,5 +179,3 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-</style>
-
