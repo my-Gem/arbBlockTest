@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const axios = require('axios');
 const circularJSON = require('circular-json');
-const Etherscan_API_KEY = "HH86KIY5KJYNCRBFGBNS3A6QP4BIMUI1N8";
+const Etherscan_API_KEY = "";
 
 const redis = require('redis');
 // 创建客户端
