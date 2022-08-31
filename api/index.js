@@ -14,24 +14,16 @@ const app = express();
 
 app.all('*', function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild, language,platform,version');
+    res.header('Access-Control-Allow-Headers', '*');
+    res.header('Content-Type', 'application/json;charset=utf-8');
     res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
-    if (req.method.toLowerCase() == 'options') {
-        res.send(200);
-    } else {
-        next();
-    }
+    next();
 });
-
-
-
 
 app.set('trust proxy', true);
 app.use(cookieParser());
 app.use(express.json({ limit: '1 mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1 mb' }));
-
-
 
 const router = express.Router();
 
