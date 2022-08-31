@@ -94,8 +94,8 @@ export default {
       this.addr = this.addr.trim();
       var _this = this;
       if (this.addr.startsWith('0x')) {
-        //此步骤放到后端做比较好,当然此步骤也可以省略
-        const alchemyUrl = 'https://eth-mainnet.alchemyapi.io/v2/b72m4oD0j-ENnP87KiOyCsJPzWrbaBc-';
+        //此步骤放到后端做比较好,当然此步骤也可以省略,隐藏apikey
+        const alchemyUrl = 'https://eth-mainnet.alchemyapi.io/v2/{alchemyApiKey}';
         const data = {
           id: 1,
           jsonrpc: '2.0',
